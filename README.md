@@ -17,7 +17,7 @@ SPICE is composed of three main modules.
 
   **2) Phylogenetic Inference and Subclone Classification:** SPICE employs IQ-TREE2 (https://github.com/iqtree/iqtree2.git), a maximum likelihood-based tool, to infer phylogenetic trees. It determines the optimal number of subclones by cutting branches with branch support values, as calculated using UFBoot and SH-aLRT tests. This approach reliably classifies trustworthy subclones.
 
-  **3) Ancestral State Estimation and Cellular Plasticity Evaluation:** For each subclone’s phylogenetic tree, SPICE maps the given cell states and uses Bayesian MCMC-based ancestral state estimation from BayesTraits (https://github.com/AndrewPMeade/BayesTraits-Release.git) to determine the parent node’s cell state. Based on these results, cellular plasticity is computed for each subclone, and its significance is assessed via permutation testing.
+  **3) Ancestral State Estimation and Cellular Plasticity Evaluation:** For each subclone’s phylogenetic tree, SPICE maps the given cell states and uses Bayesian MCMC-based ancestral state estimation (ASE) from BayesTraits (https://github.com/AndrewPMeade/BayesTraits-Release.git) to determine the parent node’s cell state. Based on these results, cellular plasticity is computed for each subclone, and its significance is assessed via permutation testing.
 
 ## <a name="installation"></a> Installation
 
@@ -63,28 +63,35 @@ $ pip install SPICE
 
 ### Somatic SNV Matrix Construction
 
-Using monopogen somatic SNV calling files as input
+Using monopogen somatic SNV calling files (putative somatic SNVs) as input
 
 ```python
-usage: python SPICE.py filter [-h] [--depth_total DEPTH_TOTAL] [--depth_ref DEPTH_REF]
-                              [--depth_alt DEPTH_ALT] [--svm_pos_score SVM_POS_SCORE]
-                              [--ldrefine_merged_score LDREFINE_MERGED_SCORE]
-                              [--baf_alt BAF_ALT] [--min_alt_cells MIN_ALT_CELLS]
-                              [--min_snvs_per_cell MIN_SNVS_PER_CELL]
-                              [--threads NTHREADS]
-                              input_directory output_directory sample_id cell_barcode
+usage: python SPICE.py filter [-h] [--depth_ref DEPTH_REF] [--depth_alt DEPTH_ALT]
+                              [--svm_pos_score SVM_POS_SCORE] [--ldrefine_merged_score LDREFINE_MERGED_SCORE]
+                              [--baf_alt BAF_ALT] [--min_alt_cells_per_snv MIN_ALT_CELLS_PER_SNV]
+                              [--min_snvs_per_cell MIN_SNVS_PER_CELL] [--threads NTHREADS]
+                              input_directory output_directory prefix cell_barcode
+
+mandatory arguments:
+  input_directory		Path to the monopogen somatic variants calling output folder
+  output_directory		Path to the directory where outputs will be saved
+  prefix			Identifier to prefix output filenames
+  cell_barcode			File containing cell barcodes to be used in the analysis
 
 optional arguments:
-  --depth_total
-  --depth_ref
-  --depth_alt
-  --svm_pos_score
-  --ldrefine_merged_score
-  --baf_alt
-  --min_alt_cells
-  --min_snvs_per_cell
-  --threads
+  --depth_ref			Minimum threshold for the number of cells supporting the reference allele (default: 5)
+  --depth_alt			Minimum threshold for the number of cells supporting the alternative allele (default: 5)
+  --svm_pos_score		Minimum threshold from the Monopogen SVM module (default: 0.1)
+  --ldrefine_merged_score	Minimum threshold from the Monopogen LD refinement module (default: 0.25)
+  --baf_alt			Maximum threshold for the alternative allele frequency (BAF) (default: 0.5)
+  --min_alt_cells_per_snv	Minimum number of cells that must support a mutated allele (default: 5)
+  --min_snvs_per_cell		Minimum number of somatic SNVs that must be supported (default: 5)
+  --threads			Number of threads to use (default: 1)
 ```
+
+For detailed information on the `--depth_ref`, `--depth_alt`, `--svm_pos_score`, `--ldrefine_merged_score`, and `--baf_alt` parameters used in somatic SNV filtering, please refer to the Monopogen page (https://github.com/KChen-lab/Monopogen.git).
+
+After `filter` module, the cell-by-variant matrix and a FASTA file (used for `phylogeny` module) will be generated in `output_directory` folder.
 
 ### Phylogenetic Inference and Subclone Classification
 
