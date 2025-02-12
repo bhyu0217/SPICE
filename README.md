@@ -67,9 +67,12 @@ Using monopogen somatic SNV calling files (putative somatic SNVs) as input
 
 ```python
 usage: python SPICE.py filter [-h] [--depth_ref DEPTH_REF] [--depth_alt DEPTH_ALT]
-                              [--svm_pos_score SVM_POS_SCORE] [--ldrefine_merged_score LDREFINE_MERGED_SCORE]
-                              [--baf_alt BAF_ALT] [--min_alt_cells_per_snv MIN_ALT_CELLS_PER_SNV]
-                              [--min_snvs_per_cell MIN_SNVS_PER_CELL] [--threads NTHREADS]
+                              [--svm_pos_score SVM_POS_SCORE]
+                              [--ldrefine_merged_score LDREFINE_MERGED_SCORE]
+                              [--baf_alt BAF_ALT]
+                              [--min_alt_cells_per_snv MIN_ALT_CELLS_PER_SNV]
+                              [--min_snvs_per_cell MIN_SNVS_PER_CELL]
+                              [--threads NTHREADS]
                               input_directory output_directory prefix cell_barcode
 
 mandatory arguments:
@@ -95,34 +98,38 @@ After `filter` module, the cell-by-variant matrix and a FASTA file (used for `ph
 
 ### Phylogenetic Inference and Subclone Classification
 
-Detects and uses the output files from the **filter** module as input.
-
 ```python
 usage: python SPICE.py phylogeny [-h] [--include_failed_chisq {true,false}] [--model MODEL]
-                                 [--uf_bootstrap_replicates UF_BOOTSTRAP_REPS] [--sh_alrt_replicates SH_ALRT_REPS]
-                                 [--uf_support_threshold UF_SUPPORT_THRESHOLD] [--sh_support_threshold SH_SUPPORT_THRESHOLD]
-                                 [--branch_cut_min BRANCH_CUT_MIN] [--branch_cut_max BRANCH_CUT_MAX]
-                                 [--branch_cut_step BRANCH_CUT_STEP] [--min_tips MIN_TIPS]
+                                 [--uf_bootstrap_replicates UF_BOOTSTRAP_REPS]
+                                 [--sh_alrt_replicates SH_ALRT_REPS]
+                                 [--uf_support_threshold UF_SUPPORT_THRESHOLD]
+                                 [--sh_support_threshold SH_SUPPORT_THRESHOLD]
+                                 [--branch_cut_min BRANCH_CUT_MIN]
+                                 [--branch_cut_max BRANCH_CUT_MAX]
+                                 [--branch_cut_step BRANCH_CUT_STEP]
+                                 [--min_tips MIN_TIPS]
                                  [--threads NTHREADS]
                                  output_directory sample_id
 
 optional arguments:
-  --include_failed_chisq         Determines whether to include cells that do not pass the IQTREE2 composition chi-square test.
-  --model                        Specifies the model selection option for IQTREE2.
-  --uf_bootstrap_replicates      Number of replicates (≥1000) for ultrafast bootstrap analysis.
-  --sh_alrt_replicates           Number of replicates (≥1000) to perform the SH-like approximate likelihood ratio test (SH-aLRT).
-  --uf_support_threshold         Branch support threshold value to be applied if ultrafast bootstrap is performed.
-  --sh_support_threshold         Branch support threshold value to be applied if the SH-aLRT is performed.
-  --branch_cut_min               Minimum value for the branch-length cutting range.
-  --branch_cut_max               Maximum value for the branch-length cutting range.
-  --branch_cut_step              Step size for the branch-length cutting range
-  --min_tips                     Threshold for the minimum number of tips in the subclonal phylogenetic tree.
-  --threads
+  --include_failed_chisq	Determines whether to include cells that do not pass the IQTREE2 composition chi-square test (default: false)
+  --model			Specifies the model selection option for IQTREE2 (default: AUTO)
+  --uf_bootstrap_replicates	Number of replicates (≥1000) for ultrafast bootstrap analysis (default: 1000)
+  --sh_alrt_replicates		Number of replicates (≥1000) to perform the SH-like approximate likelihood ratio test (SH-aLRT) (default: 1000)
+  --uf_support_threshold	Branch support threshold value to be applied if ultrafast bootstrap is performed (default: 90)
+  --sh_support_threshold	Branch support threshold value to be applied if the SH-aLRT is performed (default: 75)
+  --branch_cut_min		Minimum value for the branch-length cutting range
+  --branch_cut_max		Maximum value for the branch-length cutting range
+  --branch_cut_step		Step size for the branch-length cutting range
+  --min_tips			Threshold for the minimum number of tips in the subclonal phylogenetic tree (default: 50)
+  --threads			Number of threads to use (default: 1)
 ```
 
-### Ancestral State Estimation
+For detailed information on the `--include_failed_chisq`, `--model`, `--uf_bootstrap_replicates`, and `--sh_alrt_replicates` parameters used in substitution model selection and brach support test, please refer to the IQTREE2 page (https://github.com/iqtree/iqtree2.git).
 
-Detects and uses the output files from the **phylogeny** module as input.
+After `phylogeny` module, the NEXUS tree file (used for `ancestry` module) will be generated in `output_directory` folder.
+
+### Ancestral State Estimation
 
 ```python
 usage: python SPICE.py ancestry [-h] [--mcmc_chains MCMC_CHAINS] [--discrete_states DISCRETE_STATES]
