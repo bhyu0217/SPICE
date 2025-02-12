@@ -4,6 +4,7 @@
 - [Introduction](#introduction)
 - [Installation](#installation)
 - [Quick Start](#quickstart)
+- [Exercise](#exercise)
 - [Subclone-Specific Mutational Signature Analysis](#mutsignatures)
 - [Citation](#citation)
 - [Contact Information](#contact)
@@ -104,10 +105,8 @@ usage: python SPICE.py phylogeny [-h] [--include_failed_chisq {true,false}] [--m
                                  [--sh_alrt_replicates SH_ALRT_REPS]
                                  [--uf_support_threshold UF_SUPPORT_THRESHOLD]
                                  [--sh_support_threshold SH_SUPPORT_THRESHOLD]
-                                 [--branch_cut_min BRANCH_CUT_MIN]
-                                 [--branch_cut_max BRANCH_CUT_MAX]
-                                 [--branch_cut_step BRANCH_CUT_STEP]
-                                 [--min_tips MIN_TIPS]
+                                 [--branch_cut_min BRANCH_CUT_MIN] [--branch_cut_max BRANCH_CUT_MAX]
+                                 [--branch_cut_step BRANCH_CUT_STEP] [--min_tips MIN_TIPS]
                                  [--threads NTHREADS]
                                  output_directory sample_id
 
@@ -165,6 +164,8 @@ optional arguments:
   --perm_replicates               Number of permutation replicates to perform.
   --significance_direction        Specifies the test direction for calculating statistical significance.
 ```
+
+## <a name="exercise"></a> Exercise
 
 ## <a name="mutsignatures"></a> Subclone-Specific Mutational Signature Analysis
 SPICE enables the calculation of mutational signatures (COSMIC) for individual subclones using a predefined set of signatures, thereby defining subclones linked to specific mutational patterns.
