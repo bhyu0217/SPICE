@@ -4,7 +4,7 @@
 - [Introduction](#introduction)
 - [Installation](#installation)
 - [Quick Start](#quickstart)
-- [Exercise](#exercise)
+- [Tutorials](#tutorials)
 - [Subclone-Specific Mutational Signature Analysis](#mutsignatures)
 - [Citation](#citation)
 - [Contact Information](#contact)
@@ -165,7 +165,7 @@ optional arguments:
   --significance_direction        Specifies the test direction for calculating statistical significance.
 ```
 
-## <a name="exercise"></a> Exercise
+## <a name="tutorials"></a> Tutorials
 
 ## <a name="mutsignatures"></a> Subclone-Specific Mutational Signature Analysis
 SPICE enables the calculation of mutational signatures (COSMIC) for individual subclones using a predefined set of signatures, thereby defining subclones linked to specific mutational patterns.
