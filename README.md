@@ -140,15 +140,15 @@ usage: python SPICE.py ancestry [-h] [--mcmc_chains MCMC_CHAINS] [--discrete_sta
                                 output_directory sample_id cell_state
 
 optional arguments:
-  --mcmc_chains                 Number of MCMC chains to run.
-  --discrete_states             Number of discrete multistates to be used for ASE analysis.
-  --iterations                  Total number of iterations for the MCMC.
-  --burnin                      Number of initial iterations to discard as burn-in.
-  --rate_prior                  Prior value for the substitution rates.
-  --stepping_stones             Number of stepping stones used for marginal likelihood estimation.
-  --log_sample_period           Sample period (in iterations) for log output.
-  --effective_size_threshold    The effective size threshold used to assess MCMC convergence.
-  --psrf_threshold              The Gelman diagnostic PSRF threshold for evaluating MCMC convergence.
+  --mcmc_chains			Number of MCMC chains to run.
+  --discrete_states		Number of discrete multistates to be used for ASE analysis.
+  --iterations			Total number of iterations for the MCMC.
+  --burnin			Number of initial iterations to discard as burn-in.
+  --rate_prior			Prior value for the substitution rates.
+  --stepping_stones		Number of stepping stones used for marginal likelihood estimation.
+  --log_sample_period		Sample period (in iterations) for log output.
+  --effective_size_threshold	The effective size threshold used to assess MCMC convergence.
+  --psrf_threshold		The Gelman diagnostic PSRF threshold for evaluating MCMC convergence.
 ```
 
 ### Cellular Plasticity Evaluation
@@ -157,12 +157,12 @@ Detects and uses the output files from the **ancestry** module as input.
 
 ```python
 usage: python SPICE.py plasticity [-h] [--perm_replicates PERM_REPLICATES]
-                                  [--significance_direction {greater,less,two-sided}]
+                                  [--sig_direction {greater,less,two-sided}]
                                   output_directory sample_id
 
 optional arguments:
-  --perm_replicates               Number of permutation replicates to perform.
-  --significance_direction        Specifies the test direction for calculating statistical significance.
+  --perm_replicates		Number of permutation replicates to perform.
+  --sig_direction		Specifies the test direction for calculating statistical significance.
 ```
 
 ## <a name="tutorials"></a> Tutorials
