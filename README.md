@@ -1,5 +1,7 @@
 # Single-cell Plasticity Inference and Clonal Evolution (SPICE)
 
+![SPICE](SPICE.png)
+
 ## Table of Contents
 - [Introduction](#introduction)
 - [Installation](#installation)
