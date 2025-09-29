@@ -107,18 +107,18 @@ usage: python SPICE.py phylogeny [-h] [--include_failed_chisq {true,false}] [--m
                                  [--branch_cut_min BRANCH_CUT_MIN] [--branch_cut_max BRANCH_CUT_MAX]
                                  [--branch_cut_step BRANCH_CUT_STEP] [--min_tips MIN_TIPS]
                                  [--threads NTHREADS]
-                                 output_directory sample_id
+                                 output_directory prefix
 
 optional arguments:
   --include_failed_chisq	Determines whether to include cells that do not pass the IQTREE2 composition chi-square test (default: false)
-  --model			Specifies the model selection option for IQTREE2 (default: AUTO)
+  --model			Specifies the model selection option for IQTREE2 (default: TEST)
   --uf_bootstrap_replicates	Number of replicates (≥1000) for ultrafast bootstrap analysis (default: 1000)
   --sh_alrt_replicates		Number of replicates (≥1000) to perform the SH-like approximate likelihood ratio test (SH-aLRT) (default: 1000)
   --uf_support_threshold	Branch support threshold value to be applied if ultrafast bootstrap is performed (default: 90)
   --sh_support_threshold	Branch support threshold value to be applied if the SH-aLRT is performed (default: 75)
-  --branch_cut_min		Minimum value for the branch-length cutting range
-  --branch_cut_max		Maximum value for the branch-length cutting range
-  --branch_cut_step		Step size for the branch-length cutting range
+  --branch_cut_min		Minimum value for the branch-length cutting range (default: 0)
+  --branch_cut_max		Maximum value for the branch-length cutting range (default: 0.5)
+  --branch_cut_step		Step size for the branch-length cutting range (default: 0.01)
   --min_tips			Threshold for the minimum number of tips in the subclonal phylogenetic tree (default: 50)
   --threads			Number of threads to use (default: 1)
 ```
@@ -168,7 +168,7 @@ optional arguments:
 
 ## <a name="citation"></a> Citation
 
-Yu, B., Diaz, A. (2025)
+Yu, B., Okada M., Diaz, A. (2025)
 
 ## <a name="contact"></a> Contact Information
 For any questions or to report issues, please contact Bohyeon Yu at bohyeon.yu@ucsf.edu.

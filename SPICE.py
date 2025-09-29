@@ -15,9 +15,11 @@ import sys
 import subprocess
 from pathlib import Path
 from typing import Optional, Dict, Any
+import math
 
 from scripts.monopogen_filter import *
 from scripts.convert_matrix_to_fasta import *
+from scripts.IQTREE2 import *
 
 # ------------------------- Subcommand Implementations -------------------------
 def run_filter(args: argparse.Namespace) -> None:
@@ -29,6 +31,10 @@ def run_filter(args: argparse.Namespace) -> None:
     args : argparse.Namespace
         Parsed arguments containing input/output paths and thresholds.
     """
+    print("[SPICE:filter] Starting filter with arguments:")
+    for k, v in vars(args).items():
+        print(f"  - {k}: {v}")
+
     input_directory = args.input_directory
     output_directory = args.output_directory
     sample_id = getattr(args, "sample_id", None) or getattr(args, "prefix", None)
@@ -143,7 +149,13 @@ def run_filter(args: argparse.Namespace) -> None:
 
     # ---------------- Step 8: Mutation filter --------------
     print("\nRunning mutation filter R script (mutation_filter.R)...")
-    cmd = ["Rscript", "scripts/mutation_filter.R", output_directory, str(sample_id), cell_barcode, str(thresholds["min_alt_cells_per_snv"][0]), str(thresholds["min_snvs_per_cell"][0]), str(threads)]
+    cmd = [
+        "Rscript", "scripts/mutation_filter.R",
+        output_directory, str(sample_id), cell_barcode,
+        str(thresholds["min_alt_cells_per_snv"][0]),
+        str(thresholds["min_snvs_per_cell"][0]),
+        str(threads)
+        ]
     try:
         subprocess.run(cmd, check=True)
         print("Mutation filter R script completed successfully.")
@@ -176,6 +188,104 @@ def run_phylogeny(args: argparse.Namespace) -> None:
     print("[SPICE:phylogeny] Starting phylogeny with arguments:")
     for k, v in vars(args).items():
         print(f"  - {k}: {v}")
+
+    # -------------------------------------------------------------------------
+    # Validate inputs and derive paths
+    # -------------------------------------------------------------------------
+    fasta_path = args.fasta_path
+    output_directory = args.output_directory
+    sample_id = args.prefix
+
+    #fasta_path = Path(output_directory) / f"{sample_id}.SNV_mat.filter.fasta"
+    #if not fasta_path.exists():
+    if not os.path.exists(fasta_path):
+        print(f"Error: FASTA not found: {fasta_path}", file=sys.stderr)
+        sys.exit(1)
+
+    # -------------------------------------------------------------------------
+    # Build IQ-TREE2 command from CLI args
+    #   --model → -m
+    #   --uf_bootstrap_replicates → -B
+    #   --sh_alrt_replicates → --alrt
+    #   --threads → -T
+    # -------------------------------------------------------------------------
+    model = args.model  
+    uf_bootstrap = args.uf_bootstrap_replicates
+    sh_alrt = args.sh_alrt_replicates
+    threads = "AUTO"
+
+    cmd = iqtree2_command(
+        fasta_path=fasta_path,
+        output_directory=output_directory,
+        sample_id=sample_id,
+        model=model,
+        uf_bootstrap=uf_bootstrap,
+        sh_alrt=sh_alrt,
+        threads=threads,
+    )
+   
+    print("\n[SPICE:phylogeny] IQ-TREE2 command:")
+    print("  " + cmd)
+
+    # Also persist a runnable script for reproducibility
+    script_path = generate_script(cmd, output_directory, sample_id)
+    print(f"[SPICE:phylogeny] Wrote script: {script_path}")
+
+    # -------------------------------------------------------------------------
+    # Execute IQ-TREE2
+    # -------------------------------------------------------------------------
+    try:
+        # Use shell=True to allow the command string to be executed as-is.
+        # If you prefer list-form without shell, split properly and avoid shell=True.
+        subprocess.run(cmd, shell=True, check=True)
+        print("[SPICE:phylogeny] IQ-TREE2 finished successfully.")
+    except FileNotFoundError:
+        print("Error: IQ-TREE2 binary not found. Set IQTREE2_BIN or update the hard-coded path.", file=sys.stderr)
+        sys.exit(1)
+    except subprocess.CalledProcessError as e:
+        print(f"Error: IQ-TREE2 failed with exit code {e.returncode}", file=sys.stderr)
+        sys.exit(e.returncode)
+   
+    # -------------------------------------------------------------------------
+    # Post-IQTREE: apply support thresholds and branch-length cut grid
+    # -------------------------------------------------------------------------
+    print("\n[SPICE:phylogeny] Running BranchSupportCut.R ...")
+
+    # Pull values from CLI args
+    uf_support = args.uf_support_threshold      
+    sh_support = args.sh_support_threshold
+    cut_min    = args.branch_cut_min
+    cut_max    = args.branch_cut_max
+    cut_step   = args.branch_cut_step
+    tip_min    = args.min_tips
+
+    # Convert optional floats to strings safe for R (NA if None)
+    def _num_or_na(x):
+        return "NA" if x is None else str(x)
+
+    rscript = "Rscript"
+    rprog   = "scripts/BranchSupportCut.R"
+    cmd = [
+        rscript, rprog,
+        output_directory,            # args[1]
+        sample_id,                   # args[2]
+        str(int(uf_support)),        # args[3] UF_SUPPORT_THRESHOLD (integer)
+        str(int(sh_support)),        # args[4] SH_SUPPORT_THRESHOLD (integer)
+        _num_or_na(cut_min),         # args[5] BRANCH_CUT_MIN (double or NA)
+        _num_or_na(cut_max),         # args[6] BRANCH_CUT_MAX (double or NA)
+        _num_or_na(cut_step),        # args[7] BRANCH_CUT_STEP (double or NA)
+        str(int(tip_min)),           # args[8] TIP_THRESHOLD (integer)
+    ]
+
+    try:
+        subprocess.run(cmd, check=True)
+        print("[SPICE:phylogeny] BranchSupportCut.R finished successfully.")
+    except FileNotFoundError:
+        print("Error: 'Rscript' not found or 'scripts/BranchSupportCut.R' missing.", file=sys.stderr)
+        sys.exit(1)
+    except subprocess.CalledProcessError as e:
+        print(f"Error: BranchSupportCut.R failed with exit code {e.returncode}", file=sys.stderr)
+        sys.exit(e.returncode)
 
 
 def run_ancestry(args: argparse.Namespace) -> None:
@@ -293,7 +403,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_phy.add_argument("--include_failed_chisq", type=str_to_bool_strict, default=False,
                        choices=[True, False],
                        help="Determines whether to include cells that do not pass the IQTREE2 composition chi-square test")
-    p_phy.add_argument("--model", type=str, default="AUTO",
+    p_phy.add_argument("--model", type=str, default="TEST",
                        help="Specifies the model selection option for IQTREE2")
     p_phy.add_argument("--uf_bootstrap_replicates", type=int, default=1000,
                        help="Number of replicates (≥1000) for ultrafast bootstrap analysis")
@@ -303,11 +413,11 @@ def build_parser() -> argparse.ArgumentParser:
                        help="Branch support threshold value to be applied if ultrafast bootstrap is performed")
     p_phy.add_argument("--sh_support_threshold", type=int, default=75,
                        help="Branch support threshold value to be applied if the SH-aLRT is performed")
-    p_phy.add_argument("--branch_cut_min", type=float,
+    p_phy.add_argument("--branch_cut_min", type=float, default=0,
                        help="Minimum value for the branch-length cutting range")
-    p_phy.add_argument("--branch_cut_max", type=float,
+    p_phy.add_argument("--branch_cut_max", type=float, default=0.5,
                        help="Maximum value for the branch-length cutting range")
-    p_phy.add_argument("--branch_cut_step", type=float,
+    p_phy.add_argument("--branch_cut_step", type=float, default=0.01,
                        help="Step size for the branch-length cutting range")
     p_phy.add_argument("--min_tips", type=int, default=50,
                        help="Threshold for the minimum number of tips in the subclonal phylogenetic tree")
@@ -315,8 +425,9 @@ def build_parser() -> argparse.ArgumentParser:
                        help="Number of threads to use")
 
     # Required positional arguments
+    p_phy.add_argument("fasta_path", help="")
     p_phy.add_argument("output_directory", help="")
-    p_phy.add_argument("sample_id", help="")
+    p_phy.add_argument("prefix", help="")
     p_phy.set_defaults(func=run_phylogeny)
 
     # ------------------------------ ancestry ----------------------------------
