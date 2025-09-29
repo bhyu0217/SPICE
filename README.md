@@ -107,7 +107,12 @@ usage: python SPICE.py phylogeny [-h] [--include_failed_chisq {true,false}] [--m
                                  [--branch_cut_min BRANCH_CUT_MIN] [--branch_cut_max BRANCH_CUT_MAX]
                                  [--branch_cut_step BRANCH_CUT_STEP] [--min_tips MIN_TIPS]
                                  [--threads NTHREADS]
-                                 output_directory prefix
+                                 fasta_path output_directory prefix
+
+mandatory arguments:
+  fasta_path               	Path to the fasta file
+  output_directory              Path to the directory where outputs will be saved
+  prefix                        Identifier to prefix output filenames
 
 optional arguments:
   --include_failed_chisq	Determines whether to include cells that do not pass the IQTREE2 composition chi-square test (default: false)
@@ -136,7 +141,7 @@ usage: python SPICE.py ancestry [-h] [--mcmc_chains MCMC_CHAINS] [--discrete_sta
                                 [--log_sample_period LOG_SAMPLE_PERIOD]
                                 [--effective_size_threshold EFFECTIVE_SIZE_THRESHOLD]
                                 [--psrf_threshold PSRF_THRESHOLD]
-                                output_directory sample_id cell_state
+                                output_directory prefix cell_state
 
 optional arguments:
   --mcmc_chains			Number of MCMC chains to run.
@@ -157,7 +162,7 @@ Detects and uses the output files from the **ancestry** module as input.
 ```python
 usage: python SPICE.py plasticity [-h] [--perm_replicates PERM_REPLICATES]
                                   [--sig_direction {greater,less,two-sided}]
-                                  output_directory sample_id
+                                  output_directory prefix
 
 optional arguments:
   --perm_replicates		Number of permutation replicates to perform.
