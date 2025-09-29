@@ -68,7 +68,8 @@ $ pip install git+https://github.com/bhyu0217/SPICE.git
 Using monopogen somatic SNV calling files (putative somatic SNVs) as input
 
 ```python
-usage: python SPICE.py filter [-h] [--depth_ref DEPTH_REF] [--depth_alt DEPTH_ALT]
+usage: python SPICE.py filter [-h]
+			      [--depth_ref DEPTH_REF] [--depth_alt DEPTH_ALT]
                               [--svm_pos_score SVM_POS_SCORE]
                               [--ldrefine_merged_score LDREFINE_MERGED_SCORE]
                               [--baf_alt BAF_ALT]
@@ -101,7 +102,8 @@ After `filter` module, the cell-by-variant matrix and a FASTA file (used for `ph
 ### Phylogenetic Inference and Subclone Classification
 
 ```python
-usage: python SPICE.py phylogeny [-h] [--include_failed_chisq {true,false}] [--model MODEL]
+usage: python SPICE.py phylogeny [-h]
+				 [--include_failed_chisq {true,false}] [--model MODEL]
                                  [--uf_bootstrap_replicates UF_BOOTSTRAP_REPS]
                                  [--sh_alrt_replicates SH_ALRT_REPS]
                                  [--uf_support_threshold UF_SUPPORT_THRESHOLD]
@@ -137,24 +139,28 @@ After `phylogeny` module, the NEXUS tree file (used for `ancestry` module) will 
 ### Ancestral State Estimation
 
 ```python
-usage: python SPICE.py ancestry [-h] [--mcmc_chains MCMC_CHAINS] [--discrete_states DISCRETE_STATES]
+usage: python SPICE.py ancestry [-h]
+				[--mcmc_chains MCMC_CHAINS] [--discrete_states DISCRETE_STATES]
                                 [--iterations ITERATIONS] [--burnin BURNIN]
                                 [--rate_prior RATE_PRIOR] [--stepping_stones STEPPING_STONES]
                                 [--log_sample_period LOG_SAMPLE_PERIOD]
                                 [--effective_size_threshold EFFECTIVE_SIZE_THRESHOLD]
                                 [--psrf_threshold PSRF_THRESHOLD]
-                                output_directory prefix cell_state
+                                input_directory prefix cell_state
+
+mandatory arguments:
+  input_directory
+  prefix
+  cell_state
 
 optional arguments:
-  --mcmc_chains			Number of MCMC chains to run.
-  --discrete_states		Number of discrete multistates to be used for ASE analysis.
-  --iterations			Total number of iterations for the MCMC.
-  --burnin			Number of initial iterations to discard as burn-in.
-  --rate_prior			Prior value for the substitution rates.
-  --stepping_stones		Number of stepping stones used for marginal likelihood estimation.
-  --log_sample_period		Sample period (in iterations) for log output.
-  --effective_size_threshold	The effective size threshold used to assess MCMC convergence.
-  --psrf_threshold		The Gelman diagnostic PSRF threshold for evaluating MCMC convergence.
+  --mcmc_chains			Number of MCMC chains to run (default: 3)
+  --iterations			Total number of iterations for the MCMC (default: 1000000)
+  --burnin			Number of initial iterations to discard as burn-in (default: 200000)
+  --stepping_stones		Number of stepping stones used for marginal likelihood estimation
+  --log_sample_period		Sample period (in iterations) for log output (default: 1000)
+  --effective_size_threshold	The effective size threshold used to assess MCMC convergence
+  --psrf_threshold		The Gelman diagnostic PSRF threshold for evaluating MCMC convergence
 ```
 
 ### Cellular Plasticity Evaluation

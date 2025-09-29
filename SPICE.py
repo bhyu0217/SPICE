@@ -436,18 +436,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Estimate ancestral states / ASE with MCMC and convergence diagnostics",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    p_anc.add_argument("--mcmc_chains", type=int, help="Number of MCMC chains to run.")
-    p_anc.add_argument("--discrete_states", type=int, help="Number of discrete multistates to be used for ASE analysis.")
-    p_anc.add_argument("--iterations", type=int, help="Total number of iterations for the MCMC.")
-    p_anc.add_argument("--burnin", type=int, help="Number of initial iterations to discard as burn-in.")
-    p_anc.add_argument("--rate_prior", type=float, help="Prior value for the substitution rates.")
-    p_anc.add_argument("--stepping_stones", type=int, help="Number of stepping stones used for marginal likelihood estimation.")
-    p_anc.add_argument("--log_sample_period", type=int, help="Sample period (in iterations) for log output.")
-    p_anc.add_argument("--effective_size_threshold", type=float, help="The effective size threshold used to assess MCMC convergence.")
-    p_anc.add_argument("--psrf_threshold", type=float, help="The Gelman diagnostic PSRF threshold for evaluating MCMC convergence.")
+    p_anc.add_argument("--mcmc_chains", type=int, help="Number of MCMC chains to run")
+    p_anc.add_argument("--iterations", type=int, help="Total number of iterations for the MCMC")
+    p_anc.add_argument("--burnin", type=int, help="Number of initial iterations to discard as burn-in")
+    p_anc.add_argument("--stepping_stones", type=int, help="Number of stepping stones used for marginal likelihood estimation")
+    p_anc.add_argument("--log_sample_period", type=int, help="Sample period (in iterations) for log output")
+    p_anc.add_argument("--effective_size_threshold", type=float, help="The effective size threshold used to assess MCMC convergence")
+    p_anc.add_argument("--psrf_threshold", type=float, help="The Gelman diagnostic PSRF threshold for evaluating MCMC convergence")
     # Required positional arguments
-    p_anc.add_argument("output_directory", help="")
-    p_anc.add_argument("sample_id", help="")
+    p_anc.add_argument("input_directory", help="")
+    p_anc.add_argument("prefix", help="")
     p_anc.add_argument("cell_state", help="")
     p_anc.set_defaults(func=run_ancestry)
 
