@@ -6,7 +6,6 @@ library(ggtree)
 library(ggsci)
 
 args <- commandArgs(trailingOnly = TRUE)
-
 output_directory <- args[1]
 sample_id <- args[2]
 

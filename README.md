@@ -68,8 +68,7 @@ $ pip install git+https://github.com/bhyu0217/SPICE.git
 Using monopogen somatic SNV calling files (putative somatic SNVs) as input
 
 ```python
-usage: python SPICE.py filter [-h]
-			      [--depth_ref DEPTH_REF] [--depth_alt DEPTH_ALT]
+usage: python SPICE.py filter [-h] [--depth_ref DEPTH_REF] [--depth_alt DEPTH_ALT]
                               [--svm_pos_score SVM_POS_SCORE]
                               [--ldrefine_merged_score LDREFINE_MERGED_SCORE]
                               [--baf_alt BAF_ALT]
@@ -102,8 +101,7 @@ After `filter` module, the cell-by-variant matrix and a FASTA file (used for `ph
 ### Phylogenetic Inference and Subclone Classification
 
 ```python
-usage: python SPICE.py phylogeny [-h]
-				 [--include_failed_chisq {true,false}] [--model MODEL]
+usage: python SPICE.py phylogeny [-h] [--include_failed_chisq {true,false}] [--model MODEL]
                                  [--uf_bootstrap_replicates UF_BOOTSTRAP_REPS]
                                  [--sh_alrt_replicates SH_ALRT_REPS]
                                  [--uf_support_threshold UF_SUPPORT_THRESHOLD]
@@ -139,8 +137,7 @@ After `phylogeny` module, the NEXUS tree file (used for `ancestry` module) will 
 ### Ancestral State Estimation
 
 ```python
-usage: python SPICE.py ancestry [-h]
-				[--mcmc_chains MCMC_CHAINS] [--discrete_states DISCRETE_STATES]
+usage: python SPICE.py ancestry [-h] [--mcmc_chains MCMC_CHAINS] [--discrete_states DISCRETE_STATES]
                                 [--iterations ITERATIONS] [--burnin BURNIN]
                                 [--rate_prior RATE_PRIOR] [--stepping_stones STEPPING_STONES]
                                 [--log_sample_period LOG_SAMPLE_PERIOD]
